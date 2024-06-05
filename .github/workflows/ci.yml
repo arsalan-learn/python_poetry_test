@@ -37,48 +37,49 @@ jobs:
       uses: endorlabs/github-action@v1.1.2
       with:
         namespace: 'arsalan-learn' # Replace with your Endor Labs tenant namespace
+        scan_summary_output_type: 'table'
         scan_dependencies: true
         scan_secrets: true
         pr: true
         enable_pr_comments: yes
         github_token: ${{ secrets.GITHUB_TOKEN }} # Required for PR comments on new policy violations
   
-  scan-main:
-    permissions:
-      id-token: write
-      repository-projects: read
-      pull-requests: read
-      contents: read
-    name: endorctl-scan
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  # scan-main:
+  #   permissions:
+  #     id-token: write
+  #     repository-projects: read
+  #     pull-requests: read
+  #     contents: read
+  #   name: endorctl-scan
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5.1.0
-      with:
-        python-version: '3.12'
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v5.1.0
+  #     with:
+  #       python-version: '3.12'
 
-    - name: Install Poetry
-      run: curl -sSL https://install.python-poetry.org | python3 -
+  #   - name: Install Poetry
+  #     run: curl -sSL https://install.python-poetry.org | python3 -
 
-    - name: Install dependencies
-      run: poetry install
-    - name: 'Endor Labs Scan Push to main'
-      if: ${{ github.event_name == 'push' }}
-      uses: endorlabs/github-action@v1.1.2
-      with:
-        namespace: 'arsalan-learn' # Replace with your Endor Labs tenant namespace
-        scan_dependencies: true
-        scan_secrets: true
-        pr: false
-        scan_summary_output_type: 'table'
-        sarif_file: 'findings.sarif'
-    - name: Upload findings to github
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: 'findings.sarif'
+  #   - name: Install dependencies
+  #     run: poetry install
+  #   - name: 'Endor Labs Scan Push to main'
+  #     if: ${{ github.event_name == 'push' }}
+  #     uses: endorlabs/github-action@v1.1.2
+  #     with:
+  #       namespace: 'arsalan-learn' # Replace with your Endor Labs tenant namespace
+  #       scan_dependencies: true
+  #       scan_secrets: true
+  #       pr: false
+  #       scan_summary_output_type: 'table'
+  #       sarif_file: 'findings.sarif'
+  #   - name: Upload findings to github
+  #     uses: github/codeql-action/upload-sarif@v3
+  #     with:
+  #       sarif_file: 'findings.sarif'
   test:
     runs-on: ubuntu-latest
 
