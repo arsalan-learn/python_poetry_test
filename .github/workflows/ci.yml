@@ -34,7 +34,7 @@ jobs:
       run: poetry install
     - name: Endor Labs Scan Pull Request
       if: github.event_name == 'pull_request'
-      uses: endorlabs/github-action@v1.1.2
+      uses: endorlabs/github-action@v1.1.3
       with:
         namespace: 'arsalan-learn' # Replace with your Endor Labs tenant namespace
         scan_summary_output_type: 'table'
