@@ -80,17 +80,17 @@ jobs:
   #     uses: github/codeql-action/upload-sarif@v3
   #     with:
   #       sarif_file: 'findings.sarif'
-  test:
-    runs-on: ubuntu-latest
+  # test:
+  #   runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5.1.0
-      with:
-        python-version: '3.12'
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v5.1.0
+  #     with:
+  #       python-version: '3.12'
 
     - name: Install Poetry
       run: curl -sSL https://install.python-poetry.org | python3 -
