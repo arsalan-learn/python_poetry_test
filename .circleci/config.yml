@@ -8,6 +8,9 @@ jobs:
     # Install dependencies and run tests
     docker:
       - image: cimg/python:3.12-node
+    environment:
+      ENDORCTL_VERSION: "latest"
+      ENDOR_NAMESPACE: "arsalan-learn"
     steps:
       - checkout
       - python/install-packages:
@@ -15,6 +18,21 @@ jobs:
       - run:
           name: Run tests
           command: poetry run pytest --junitxml=junit.xml || ((($? == 5)) && echo 'Did not find any tests to run.')
+      - run:
+          name: "Install endorctl"
+          command: |
+            curl https://api.endorlabs.com/download/latest/endorctl_linux_amd64 -o endorctl
+            echo "$(curl -s https://api.endorlabs.com/sha/latest/endorctl_linux_amd64)  endorctl" | sha256sum -c;
+            if [ $? -ne 0 ]; then
+              echo "Integrity check failed";
+              exit 1;
+            fi
+            chmod +x ./endorctl
+            ./endorctl --version            
+      - run:
+          name: "Endor Labs Test"
+          command: |
+            ./endorctl scan --pr --pr-baseline=main --pr- --dependencies
       - store_test_results:
           path: junit.xml
   deploy:
