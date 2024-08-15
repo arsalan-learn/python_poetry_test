@@ -11,8 +11,8 @@ jobs:
     environment:
       ENDORCTL_VERSION: "latest"
       ENDOR_NAMESPACE: "arsalan-learn"
-      # ENDOR_API_CREDENTIALS_KEY: "$ENDOR_API_CREDENTIALS_KEY"
-      # ENDOR_API_CREDENTIALS_SECRET: "$ENDOR_API_CREDENTIALS_SECRET"
+      ENDOR_API_CREDENTIALS_KEY: "$ENDOR_API_CREDENTIALS_KEY"
+      ENDOR_API_CREDENTIALS_SECRET: "$ENDOR_API_CREDENTIALS_SECRET"
     steps:
       - checkout
       - python/install-packages:
@@ -35,7 +35,7 @@ jobs:
           name: "Endor Labs Test"
           command: |
             echo $ENDOR_API_CREDENTIALS_KEY
-            #./endorctl scan --pr --pr-baseline=main --dependencies
+            ./endorctl scan --pr --pr-baseline=main --dependencies
       - store_test_results:
           path: junit.xml
   deploy:
