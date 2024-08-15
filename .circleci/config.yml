@@ -41,7 +41,7 @@ jobs:
             echo $CIRCLE_PR_NUMBER
             echo $CIRCLE_PIPELINE_ID
             
-            #./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=12 --enable-pr-comments
+            #./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=122 --enable-pr-comments
       - store_test_results:
           path: junit.xml
   deploy:
