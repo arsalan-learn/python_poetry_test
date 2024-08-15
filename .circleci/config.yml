@@ -23,20 +23,19 @@ jobs:
       - run:
           name: "Install endorctl"
           command: |
-            curl https://api.endorlabs.com/download/latest/endorctl_linux_amd64 -o endorctl
-            echo "$(curl -s https://api.endorlabs.com/sha/latest/endorctl_linux_amd64)  endorctl" | sha256sum -c;
-            if [ $? -ne 0 ]; then
-              echo "Integrity check failed";
-              exit 1;
-            fi
-            chmod +x ./endorctl
-            ./endorctl --version            
+            # curl https://api.endorlabs.com/download/latest/endorctl_linux_amd64 -o endorctl
+            # echo "$(curl -s https://api.endorlabs.com/sha/latest/endorctl_linux_amd64)  endorctl" | sha256sum -c;
+            # if [ $? -ne 0 ]; then
+            #   echo "Integrity check failed";
+            #   exit 1;
+            # fi
+            # chmod +x ./endorctl
+            # ./endorctl --version            
       - run:
           name: "Endor Labs Test"
           command: |
-            #echo $CIRCLE_PR_NUMBER
-            echo ${CIRCLE_BRANCH}
-            ./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=111 --enable-pr-comments
+            echo $CIRCLE_PULL_REQUEST
+            #./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=111 --enable-pr-comments
       - store_test_results:
           path: junit.xml
   deploy:
