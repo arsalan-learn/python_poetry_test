@@ -11,8 +11,8 @@ jobs:
     environment:
       ENDORCTL_VERSION: "latest"
       ENDOR_NAMESPACE: "arsalan-learn"
-      ENDOR_API_CREDENTIALS_KEY: "$ENDOR_API_CREDENTIALS_KEY"
-      ENDOR_API_CREDENTIALS_SECRET: "$ENDOR_API_CREDENTIALS_SECRET"
+      # ENDOR_API_CREDENTIALS_KEY: "$ENDOR_API_CREDENTIALS_KEY"
+      # ENDOR_API_CREDENTIALS_SECRET: "$ENDOR_API_CREDENTIALS_SECRET"
     steps:
       - checkout
       - python/install-packages:
