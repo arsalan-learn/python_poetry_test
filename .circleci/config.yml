@@ -34,8 +34,8 @@ jobs:
       - run:
           name: "Endor Labs Test"
           command: |
-            echo $CIRCLE_PR_NUMBER
-            ./endorctl scan --pr --dependencies --enable-pr-comments --github-token=$GITHUB_ACCESS_TOKEN
+            #echo $CIRCLE_PR_NUMBER
+            ./endorctl scan --pr --dependencies --enable-pr-comments --github-token=$GITHUB_ACCESS_TOKEN --github-pr-id=$CIRCLE_PULL_REQUEST
       - store_test_results:
           path: junit.xml
   deploy:
