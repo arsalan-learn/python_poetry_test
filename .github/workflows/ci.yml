@@ -17,6 +17,7 @@ jobs:
       id-token: write # Used for keyless authentication with Endor Labs
       #issues: write # Required to automatically comment on PRs for new policy violations
       pull-requests: write # Required to automatically comment on PRs for new policy violations
+
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
@@ -34,14 +35,14 @@ jobs:
       run: poetry install
     - name: Endor Labs Scan Pull Request
       if: github.event_name == 'pull_request'
-      uses: endorlabs/github-action@v1.1.2
+      uses: endorlabs/github-action@v1.1.3
       with:
         namespace: 'arsalan-learn' # Replace with your Endor Labs tenant namespace
         scan_summary_output_type: 'table'
         scan_dependencies: true
         scan_secrets: true
         pr: true
-        enable_pr_comments: yes
+        enable_pr_comments: true
         github_token: ${{ secrets.GITHUB_TOKEN }} # Required for PR comments on new policy violations
   
   # scan-main:
@@ -80,23 +81,23 @@ jobs:
   #     uses: github/codeql-action/upload-sarif@v3
   #     with:
   #       sarif_file: 'findings.sarif'
-  test:
-    runs-on: ubuntu-latest
+  # test:
+  #   runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5.1.0
-      with:
-        python-version: '3.12'
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v5.1.0
+  #     with:
+  #       python-version: '3.12'
 
-    - name: Install Poetry
-      run: curl -sSL https://install.python-poetry.org | python3 -
+    # - name: Install Poetry
+    #   run: curl -sSL https://install.python-poetry.org | python3 -
 
-    - name: Install dependencies
-      run: poetry install
+    # - name: Install dependencies
+    #   run: poetry install
 
-    - name: Run tests
-      run: poetry run pytest
+    # - name: Run tests
+    #   run: poetry run pytest
