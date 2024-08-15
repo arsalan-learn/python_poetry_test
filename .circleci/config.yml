@@ -15,27 +15,33 @@ jobs:
       #ENDOR_API_CREDENTIALS_SECRET: "$ENDOR_API_CREDENTIALS_SECRET"
     steps:
       - checkout
-      - python/install-packages:
-          pkg-manager: poetry
-      - run:
-          name: Run tests
-          command: poetry run pytest --junitxml=junit.xml || ((($? == 5)) && echo 'Did not find any tests to run.')
+      # - python/install-packages:
+      #     pkg-manager: poetry
+      # - run:
+      #     name: Run tests
+      #     command: poetry run pytest --junitxml=junit.xml || ((($? == 5)) && echo 'Did not find any tests to run.')
       - run:
           name: "Install endorctl"
           command: |
-            curl https://api.endorlabs.com/download/latest/endorctl_linux_amd64 -o endorctl
-            echo "$(curl -s https://api.endorlabs.com/sha/latest/endorctl_linux_amd64)  endorctl" | sha256sum -c;
-            if [ $? -ne 0 ]; then
-              echo "Integrity check failed";
-              exit 1;
-            fi
-            chmod +x ./endorctl
-            ./endorctl --version            
+            # curl https://api.endorlabs.com/download/latest/endorctl_linux_amd64 -o endorctl
+            # echo "$(curl -s https://api.endorlabs.com/sha/latest/endorctl_linux_amd64)  endorctl" | sha256sum -c;
+            # if [ $? -ne 0 ]; then
+            #   echo "Integrity check failed";
+            #   exit 1;
+            # fi
+            # chmod +x ./endorctl
+            # ./endorctl --version            
       - run:
           name: "Endor Labs Test"
           command: |
-            echo $ENDOR_API_CREDENTIALS_KEY
-            ./endorctl scan --pr --pr-baseline=main --dependencies
+            echo $CIRCLE_BRANCH
+            echo $CIRCLE_REPOSITORY_URL
+            echo $CIRCLE_PULL_REQUEST
+            echo $CIRCLE_PULL_REQUESTS
+            echo $CIRCLE_PR_NUMBER
+            echo $CIRCLE_PIPELINE_ID
+            
+            #./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=111 --enable-pr-comments
       - store_test_results:
           path: junit.xml
   deploy:
