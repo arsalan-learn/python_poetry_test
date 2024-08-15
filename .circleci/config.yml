@@ -35,7 +35,7 @@ jobs:
           name: "Endor Labs Test"
           command: |
             echo $ENDOR_API_CREDENTIALS_KEY
-            ./endorctl scan --pr --pr-baseline=main --dependencies
+            ./endorctl scan --pr --dependencies --enable-pr-comments
       - store_test_results:
           path: junit.xml
   deploy:
