@@ -34,7 +34,7 @@ jobs:
       - run:
           name: "Endor Labs Test"
           command: |
-            echo $ENDOR_API_CREDENTIALS_KEY
+            echo $CIRCLE_PULL_REQUEST
             ./endorctl scan --pr --dependencies --enable-pr-comments
       - store_test_results:
           path: junit.xml
