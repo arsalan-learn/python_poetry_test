@@ -36,7 +36,7 @@ jobs:
           command: |
             #echo $CIRCLE_PR_NUMBER
             echo ${CIRCLE_BRANCH}
-            ./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id="${CIRCLE_PULL_REQUEST##*/}" --enable-pr-comments
+            ./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=111 --enable-pr-comments
       - store_test_results:
           path: junit.xml
   deploy:
