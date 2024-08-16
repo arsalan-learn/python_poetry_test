@@ -25,14 +25,14 @@ jobs:
       - run:
           name: "Install endorctl"
           command: |
-            # curl https://api.endorlabs.com/download/latest/endorctl_linux_amd64 -o endorctl
-            # echo "$(curl -s https://api.endorlabs.com/sha/latest/endorctl_linux_amd64)  endorctl" | sha256sum -c;
-            # if [ $? -ne 0 ]; then
-            #   echo "Integrity check failed";
-            #   exit 1;
-            # fi
-            # chmod +x ./endorctl
-            # ./endorctl --version            
+            curl https://api.endorlabs.com/download/latest/endorctl_linux_amd64 -o endorctl
+            echo "$(curl -s https://api.endorlabs.com/sha/latest/endorctl_linux_amd64)  endorctl" | sha256sum -c;
+            if [ $? -ne 0 ]; then
+              echo "Integrity check failed";
+              exit 1;
+            fi
+            chmod +x ./endorctl
+            ./endorctl --version            
       - run:
           name: "Endor Labs Test"
           command: |
@@ -49,21 +49,22 @@ jobs:
             sudo apt-get install jq
             pr_response=$(curl --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?head=$CIRCLE_PROJECT_USERNAME:$CIRCLE_BRANCH&state=open" \
             -u $GH_USER:$GITHUB_ACCESS_TOKEN)
-            echo $pr_response | jq -r ".[].number"
+            
             if [ $(echo $pr_response | jq length) -eq 0 ]; then
               echo "No PR found to update"
             else
-              pr_comment_url=$(echo $pr_response | jq -r ".[]._links.comments.href")
+              #pr_comment_url=$(echo $pr_response | jq -r ".[]._links.comments.href")
             fi
-            echo $pr_comment_url
-            curl --location --request POST "$pr_comment_url" \
-            -u $GH_USER:$GITHUB_ACCESS_TOKEN \
-            --header 'Content-Type: application/json' \
-            --data-raw '{
-              "body": "This would be the data to add lalalala"
-            }'
+            pr_comment_number=$(echo $pr_response | jq -r ".[].number"
+            echo $pr_comment_number
+            # curl --location --request POST "$pr_comment_url" \
+            # -u $GH_USER:$GITHUB_ACCESS_TOKEN \
+            # --header 'Content-Type: application/json' \
+            # --data-raw '{
+            #   "body": "This would be the data to add lalalala"
+            # }'
             
-            #./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=122 --enable-pr-comments
+            ./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=$pr_comment_number --enable-pr-comments
       - store_test_results:
           path: junit.xml
   deploy:
