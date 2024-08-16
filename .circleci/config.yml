@@ -11,6 +11,7 @@ jobs:
     environment:
       ENDORCTL_VERSION: "latest"
       ENDOR_NAMESPACE: "arsalan-learn"
+      GH_USER: "arsalanendor"
       #ENDOR_API_CREDENTIALS_KEY: "$ENDOR_API_CREDENTIALS_KEY"
       #ENDOR_API_CREDENTIALS_SECRET: "$ENDOR_API_CREDENTIALS_SECRET"
     steps:
@@ -40,8 +41,28 @@ jobs:
             echo $CIRCLE_PULL_REQUESTS
             echo $CIRCLE_PR_NUMBER
             echo $CIRCLE_PIPELINE_ID
+            echo $CIRCLE_PROJECT_USERNAME
+            echo $CIRCLE_PROJECT_REPONAME
+            echo $CIRCLE_BRANCH
+
+            sudo apt-get install jq
+            pr_response=$(curl --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?head=$CIRCLE_PROJECT_USERNAME:$CIRCLE_BRANCH&state=open" \
+            -u $GH_USER:$GITHUB_ACCESS_TOKEN)
+
+            if [ $(echo $pr_response | jq length) -eq 0 ]; then
+              echo "No PR found to update"
+            else
+              pr_comment_url=$(echo $pr_response | jq -r ".[]._links.comments.href")
+            fi
+
+            curl --location --request POST "$pr_comment_url" \
+            -u $GH_USER:$GITHUB_ACCESS_TOKEN \
+            --header 'Content-Type: application/json' \
+            --data-raw '{
+              "body": "This would be the data to add lalalala"
+            }'
             
-            #./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=12 --enable-pr-comments
+            #./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=122 --enable-pr-comments
       - store_test_results:
           path: junit.xml
   deploy:
