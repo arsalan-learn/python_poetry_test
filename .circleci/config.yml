@@ -49,6 +49,9 @@ jobs:
             sudo apt-get install jq
             pr_response=$(curl --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?head=$CIRCLE_PROJECT_USERNAME:$CIRCLE_BRANCH&state=open" \
             -u $GH_USER:$GITHUB_ACCESS_TOKEN)
+        
+            pr_comment_number=$(echo $pr_response | jq -r ".[].number"
+            echo $pr_comment_number
             
             ./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=$pr_comment_number --enable-pr-comments
       - store_test_results:
