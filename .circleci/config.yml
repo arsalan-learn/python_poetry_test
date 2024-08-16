@@ -12,6 +12,7 @@ jobs:
       ENDORCTL_VERSION: "latest"
       ENDOR_NAMESPACE: "arsalan-learn"
       GH_USER: "arsalanendor"
+      CIRCLE_PROJECT_REPONAME: "python_poetry_test"
       #ENDOR_API_CREDENTIALS_KEY: "$ENDOR_API_CREDENTIALS_KEY"
       #ENDOR_API_CREDENTIALS_SECRET: "$ENDOR_API_CREDENTIALS_SECRET"
     steps:
