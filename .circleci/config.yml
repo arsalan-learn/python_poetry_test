@@ -55,7 +55,7 @@ jobs:
             else
               pr_comment_url=$(echo $pr_response | jq -r ".[]._links.comments.href")
             fi
-
+            echo $pr_comment_url
             curl --location --request POST "$pr_comment_url" \
             -u $GH_USER:$GITHUB_ACCESS_TOKEN \
             --header 'Content-Type: application/json' \
