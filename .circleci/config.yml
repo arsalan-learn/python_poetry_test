@@ -21,52 +21,44 @@ jobs:
       #     pkg-manager: poetry
       # - run:
       #     name: Run tests
-      #     command: poetry run pytest --junitxml=junit.xml || ((($? == 5)) && echo 'Did not find any tests to run.')
+      #     command: poetry run pytest --junitxml=junit.xml || ((($? == 5)) && echo 'Did not find any tests to run.')     
       - run:
-          name: "Install endorctl"
-          command: |
-            curl https://api.endorlabs.com/download/latest/endorctl_linux_amd64 -o endorctl
-            echo "$(curl -s https://api.endorlabs.com/sha/latest/endorctl_linux_amd64)  endorctl" | sha256sum -c;
-            if [ $? -ne 0 ]; then
-              echo "Integrity check failed";
-              exit 1;
-            fi
-            chmod +x ./endorctl
-            ./endorctl --version            
-      - run:
-          name: "Endor Labs Test"
-          command: |
-            echo $CIRCLE_BRANCH
-            echo $CIRCLE_REPOSITORY_URL
-            echo $CIRCLE_PULL_REQUEST
-            echo $CIRCLE_PULL_REQUESTS
-            echo $CIRCLE_PR_NUMBER
-            echo $CIRCLE_PIPELINE_ID
-            echo $CIRCLE_PROJECT_USERNAME
-            echo $CIRCLE_PROJECT_REPONAME
-            echo $CIRCLE_BRANCH
-
+          name: "Endor Scan"
+          command: |         
             sudo apt-get install jq
-            pr_response=$(curl --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?head=$CIRCLE_PROJECT_USERNAME:$CIRCLE_BRANCH&state=open" \
-            -u $GH_USER:$GITHUB_ACCESS_TOKEN)
+            #get pr info for this project and branch that triggered this workflow
+            pr_response=$(curl --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls?head=$CIRCLE_PROJECT_USERNAME:$CIRCLE_BRANCH&state=open" -u $GH_USER:$GITHUB_ACCESS_TOKEN)
             
-            # if [ $(echo $pr_response | jq length) -eq 0 ]; then
-            #   echo "No PR found to update"
-            # else
-            #   #pr_comment_url=$(echo $pr_response | jq -r ".[]._links.comments.href")
-            # fi
-           
-            # curl --location --request POST "$pr_comment_url" \
-            # -u $GH_USER:$GITHUB_ACCESS_TOKEN \
-            # --header 'Content-Type: application/json' \
-            # --data-raw '{
-            #   "body": "This would be the data to add lalalala"
-            # }'
-
-            pr_comment_number=$(echo $pr_response | jq -r ".[].number")
-            echo $pr_comment_number
-            
-            ./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=$pr_comment_number --enable-pr-comments
+            if [ $(echo $pr_response | jq length) -eq 0 ]; then
+              echo "No PR found to update"
+            else
+              echo "PR found"
+              pr_comment_number=$(echo $pr_response | jq -r ".[].number")
+              echo "PR#: $pr_comment_number"
+              pr_reviews=$(curl --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$pr_comment_number/reviews" -u $GH_USER:$GITHUB_ACCESS_TOKEN)
+              
+              if [ $(echo $pr_reviews | jq length) -eq 0 ]; then
+                echo "No reviews found for PR"
+              else
+                echo "PR is in review state"
+                pr_review_state=$(echo $pr_reviews | jq -r ".[].state")
+                if [ $pr_review_state == "APPROVED" ]; then
+                  echo "PR is reviewed"
+                  echo "Downloading endorctl and performing scan"
+                  curl https://api.endorlabs.com/download/latest/endorctl_linux_amd64 -o endorctl
+                  echo "$(curl -s https://api.endorlabs.com/sha/latest/endorctl_linux_amd64)  endorctl" | sha256sum -c;
+                  if [ $? -ne 0 ]; then
+                    echo "Integrity check failed";
+                    exit 1;
+                  fi
+                  chmod +x ./endorctl
+                  ./endorctl --version
+                  ./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=$pr_comment_number --enable-pr-comments
+                else
+                  echo "PR is not reviewed"
+                fi
+              fi
+            fi            
       - store_test_results:
           path: junit.xml
   deploy:
