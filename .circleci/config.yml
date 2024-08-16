@@ -27,7 +27,7 @@ jobs:
             # echo "$(curl -s https://api.endorlabs.com/sha/latest/endorctl_linux_amd64)  endorctl" | sha256sum -c;
             # if [ $? -ne 0 ]; then
             #   echo "Integrity check failed";
-            #   exit 1;
+            #   exit 2;
             # fi
             # chmod +x ./endorctl
             # ./endorctl --version            
