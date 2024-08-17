@@ -1,5 +1,3 @@
-# This config was automatically generated from your source code
-# Stacks detected: cicd:github-actions:.github/workflows,deps:python:.,package_manager:poetry:.
 version: 2.1
 orbs:
   python: circleci/python@2
@@ -23,7 +21,7 @@ jobs:
       #     name: Run tests
       #     command: poetry run pytest --junitxml=junit.xml || ((($? == 5)) && echo 'Did not find any tests to run.')     
       - run:
-          name: "Endor Scan"
+          name: "Endor Scan 101"
           command: |         
             sudo apt-get install jq
             #get pr info for this project and branch that triggered this workflow
