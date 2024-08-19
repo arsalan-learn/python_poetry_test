@@ -15,11 +15,11 @@ jobs:
       #ENDOR_API_CREDENTIALS_SECRET: "$ENDOR_API_CREDENTIALS_SECRET"
     steps:
       - checkout
-      # - python/install-packages:
-      #     pkg-manager: poetry
-      # - run:
-      #     name: Run tests
-      #     command: poetry run pytest --junitxml=junit.xml || ((($? == 5)) && echo 'Did not find any tests to run.')     
+      - python/install-packages:
+          pkg-manager: poetry
+      - run:
+          name: Run tests
+          command: poetry run pytest --junitxml=junit.xml || ((($? == 5)) && echo 'Did not find any tests to run.')     
       - run:
           name: "Endor Scan demo with kriti"
           command: |         
@@ -31,9 +31,9 @@ jobs:
               echo "No PR found to update"
             else
               echo "PR found"
-              pr_comment_number=$(echo $pr_response | jq -r ".[].number")
-              echo "PR#: $pr_comment_number"
-              pr_reviews=$(curl --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$pr_comment_number/reviews" -u $GH_USER:$GITHUB_ACCESS_TOKEN)
+              pr_number=$(echo $pr_response | jq -r ".[].number")
+              echo "PR#: $pr_number"
+              pr_reviews=$(curl --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$pr_number/reviews" -u $GH_USER:$GITHUB_ACCESS_TOKEN)
               
               if [ $(echo $pr_reviews | jq length) -eq 0 ]; then
                 echo "No reviews found for PR"
@@ -51,7 +51,7 @@ jobs:
                   fi
                   chmod +x ./endorctl
                   ./endorctl --version
-                  ./endorctl scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=$pr_comment_number --enable-pr-comments
+                  ./endorctl scan --quick-scan --pr --dependencies --github-token="$GITHUB_ACCESS_TOKEN" --github-pr-id=$pr_number --enable-pr-comments
                 else
                   echo "PR is not reviewed"
                 fi
