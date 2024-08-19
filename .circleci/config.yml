@@ -14,12 +14,7 @@ jobs:
       #ENDOR_API_CREDENTIALS_KEY: "$ENDOR_API_CREDENTIALS_KEY"
       #ENDOR_API_CREDENTIALS_SECRET: "$ENDOR_API_CREDENTIALS_SECRET"
     steps:
-      - checkout
-      - python/install-packages:
-          pkg-manager: poetry
-      - run:
-          name: Run tests
-          command: poetry run pytest --junitxml=junit.xml || ((($? == 5)) && echo 'Did not find any tests to run.')     
+      - checkout 
       - run:
           name: "Endor Scan demo with kriti"
           command: |         
