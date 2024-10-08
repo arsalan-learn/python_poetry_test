@@ -3,7 +3,7 @@ name: Endor-scan
 on:
   push:
     branches:
-      - 'develop'
+      - 'main'
       - 'endor-impl' 
 jobs:
   scan-develop:
