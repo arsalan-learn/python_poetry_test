@@ -1,0 +1,29 @@
+name: Endor-scan
+
+on:
+  push:
+    branches:
+      - 'develop'
+      - 'endor-impl' 
+jobs:
+  scan-develop:
+    permissions:
+      id-token: write
+      repository-projects: read
+      pull-requests: read
+      contents: read
+    name: endorctl-scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code from the repo
+        uses: actions/checkout@v4
+      - name: Set up node
+        uses: actions/setup-node@v3
+      - name: 'Endor Labs Scan Push to develop'
+        if: ${{ github.event_name == 'push' }}
+        uses: endorlabs/github-action@v1.1.4
+        with:
+          namespace: 'arsalan-learn'
+          scan_dependencies: true
+          scan_secrets: true
+          pr: false
